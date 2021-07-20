@@ -113,6 +113,8 @@
   lexer.addRule(/<=/, function (l) { return token('LESS_EQUAL', l); });
   lexer.addRule(/~/, function (l) { return token('CONTAINS', l); });
   lexer.addRule(/!~/, function (l) { return token('NOT_CONTAINS', l); });
+  lexer.addRule(/regex/, function (l) { return token('REGEX', l); });
+  lexer.addRule(/!regex/, function (l) { return token('NOT_REGEX', l); });
   lexer.lexAll = function () {
     var match;
     var result = [];
@@ -1090,6 +1092,8 @@
             if (['str', 'date', 'datetime'].indexOf(field.type) >= 0) {
               suggestions.push(['~', 'contains']);
               suggestions.push(['!~', 'does not contain']);
+              suggestions.push(['regex', 'regex match']);
+              suggestions.push(['!regex', 'regex mismatch']);
               snippetAfter = ' "|"';
             } else if (field.options) {
               snippetAfter = ' "|"';

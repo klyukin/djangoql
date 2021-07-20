@@ -82,6 +82,8 @@ class DjangoQLLexer(object):
         'LESS_EQUAL',
         'CONTAINS',
         'NOT_CONTAINS',
+        'REGEX',
+        'NOT_REGEX',
     ]
 
     t_COMMA = ','
@@ -118,6 +120,14 @@ class DjangoQLLexer(object):
         return t
 
     not_followed_by_name = '(?![_0-9A-Za-z])'
+
+    @TOKEN('regex' + not_followed_by_name)
+    def t_REGEX(self, t):
+        return t
+
+    @TOKEN('!regex' + not_followed_by_name)
+    def t_NOT_REGEX(self, t):
+        return t
 
     @TOKEN('or' + not_followed_by_name)
     def t_OR(self, t):
