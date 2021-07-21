@@ -149,6 +149,7 @@ class DjangoQLSchemaTest(TestCase):
             'date_joined > "1753-01-01"',
             'date_joined > "1753-01-01 01:24"',
             'date_joined > "1753-01-01 01:24:42"',
+            'first_name regex "^t(.*)t$"',
         ]
         for query in samples:
             ast = DjangoQLParser().parse(query)
@@ -167,6 +168,7 @@ class DjangoQLSchemaTest(TestCase):
             'date_joined < "1753-30-01"',   # bad timestamps
             'date_joined < "1753-01-01 12"',
             'date_joined < "1753-01-01 12AM"',
+            'first_name regex "^t(*)t$"',   # invalid regex
         ]
         for query in samples:
             ast = DjangoQLParser().parse(query)

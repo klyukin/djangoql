@@ -100,3 +100,13 @@ class DjangoQLParseTest(TestCase):
                        Const(5)),
             self.parser.parse('user.group.id = 5'),
         )
+
+    def test_regex(self):
+        self.assertEqual(
+            Expression(Name(['user', 'first_name']), Comparison('regex'), Const('^t(.*)t$')),
+            self.parser.parse('user.first_name regex "^t(.*)t$"')
+        )
+        self.assertEqual(
+            Expression(Name(['user', 'first_name']), Comparison('!regex'), Const('^t(*)t$')),
+            self.parser.parse('user.first_name !regex "^t(*)t$"')
+        )

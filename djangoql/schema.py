@@ -14,6 +14,7 @@ from django.utils.timezone import get_current_timezone
 from .ast import Comparison, Const, List, Logical, Name, Node
 from .compat import text_type
 from .exceptions import DjangoQLSchemaError
+import re
 
 
 class DjangoQLField(object):
@@ -489,3 +490,12 @@ class DjangoQLSchema(object):
             values = value if isinstance(node.right, List) else [value]
             for v in values:
                 field.validate(v)
+
+        if node.operator.operator in ['regex', '!regex']:
+            try:
+                re.compile(node.right.value)
+            except re.error:
+                raise DjangoQLSchemaError(
+                    'Invalid regex '
+                    '%s' % node.right.value
+                )

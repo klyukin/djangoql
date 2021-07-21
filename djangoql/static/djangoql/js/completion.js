@@ -96,6 +96,8 @@
   lexer.addRule(new RegExp('None' + reNotFollowedByName), function (l) {
     return token('NONE', l);
   });
+  lexer.addRule(/regex/, function (l) { return token('REGEX', l); });
+  lexer.addRule(/!regex/, function (l) { return token('NOT_REGEX', l); });
   lexer.addRule(nameRegex, function (l) { return token('NAME', l); });
   lexer.addRule(stringRegex, function (l) {
     // Trim leading and trailing quotes
@@ -113,8 +115,6 @@
   lexer.addRule(/<=/, function (l) { return token('LESS_EQUAL', l); });
   lexer.addRule(/~/, function (l) { return token('CONTAINS', l); });
   lexer.addRule(/!~/, function (l) { return token('NOT_CONTAINS', l); });
-  lexer.addRule(/regex/, function (l) { return token('REGEX', l); });
-  lexer.addRule(/!regex/, function (l) { return token('NOT_REGEX', l); });
   lexer.lexAll = function () {
     var match;
     var result = [];
@@ -874,7 +874,7 @@
       } else if (lastToken && whitespace &&
           nextToLastToken && nextToLastToken.name === 'NAME' &&
           ['EQUALS', 'NOT_EQUALS', 'CONTAINS', 'NOT_CONTAINS', 'GREATER_EQUAL',
-            'GREATER', 'LESS_EQUAL', 'LESS'].indexOf(lastToken.name) >= 0) {
+            'GREATER', 'LESS_EQUAL', 'LESS', 'REGEX', 'NOT_REGEX'].indexOf(lastToken.name) >= 0) {
         resolvedName = this.resolveName(nextToLastToken.value);
         if (resolvedName.model) {
           scope = 'value';
@@ -1092,11 +1092,13 @@
             if (['str', 'date', 'datetime'].indexOf(field.type) >= 0) {
               suggestions.push(['~', 'contains']);
               suggestions.push(['!~', 'does not contain']);
-              suggestions.push(['regex', 'regex match']);
-              suggestions.push(['!regex', 'regex mismatch']);
               snippetAfter = ' "|"';
             } else if (field.options) {
               snippetAfter = ' "|"';
+            }
+            if (field.type === 'str') {
+              suggestions.push(['regex', 'regex match']);
+              suggestions.push(['!regex', 'regex mismatch']);
             }
             if (field.type !== 'str') {
               Array.prototype.push.apply(suggestions, ['>', '>=', '<', '<=']);

@@ -35,6 +35,8 @@ class DjangoQLLexerTest(TestCase):
         self.assert_output(self.lexer.input('<='), [('LESS_EQUAL', '<=')])
         self.assert_output(self.lexer.input('~'), [('CONTAINS', '~')])
         self.assert_output(self.lexer.input('!~'), [('NOT_CONTAINS', '!~')])
+        self.assert_output(self.lexer.input('regex'), [('REGEX', 'regex')])
+        self.assert_output(self.lexer.input('!regex'), [('NOT_REGEX', '!regex')])
 
     def test_name(self):
         for name in ('a', 'myVar_42', '__LOL__', '_', '_0'):
